@@ -1,0 +1,120 @@
+
+.site-navbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 3% 16px;
+  box-sizing: border-box;
+  background: rgba(11, 18, 32, 0.97);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.navbar-brand a {
+  color: #c4b5fd;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-decoration: none;
+  text-shadow:
+    0 0 8px rgba(139, 92, 246, 0.65),
+    0 0 22px rgba(34, 211, 238, 0.2);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.navbar-brand a:hover {
+  color: #22d3ee;
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
+}
+
+.site-nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  width: 100%;
+  padding: 0 28px;
+  box-sizing: border-box;
+}
+
+.nav-link {
+  color: #cbd5e1;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #22d3ee;
+  text-shadow: 0 0 12px rgba(34, 211, 238, 0.35);
+}
+
+/* Small, visible admin access icon */
+.admin-secret-link {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  box-sizing: border-box;
+  border: 1px solid rgba(34, 211, 238, 0.45);
+  border-radius: 50%;
+  background: rgba(17, 28, 46, 0.9);
+  color: #22d3ee;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-secret-link:hover {
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+}
+
+.admin-secret-mark {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .site-navbar {
+    gap: 12px;
+    padding: 14px 3%;
+  }
+
+  .navbar-brand a {
+    font-size: 28px;
+  }
+
+  .site-nav-links {
+    gap: 12px 16px;
+    padding: 0 4px;
+  }
+
+  .nav-link {
+    font-size: 13px;
+  }
+
+  .admin-secret-link {
+    top: 10px;
+    right: 10px;
+    width: 19px;
+    height: 19px;
+  }
+}

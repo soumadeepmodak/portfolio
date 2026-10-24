@@ -1,0 +1,97 @@
+
+:root {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #CBD5E1;
+  background: #0B1220;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  background: #0B1220;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  color: #CBD5E1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #F8FAFC;
+  line-height: 1.25;
+}
+
+a {
+  color: #22D3EE;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: #164E63;
+  color: #FFFFFF;
+}
+
+:focus-visible {
+  outline: 3px solid #22D3EE;
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 38px;
+  }
+
+  h2 {
+    font-size: 27px;
+  }
+
+  h3 {
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,421 @@
+
+.about-manager {
+  --am-bg: #0d1224;
+  --am-panel: #121a30;
+  --am-border: rgba(164, 143, 255, 0.2);
+  --am-text: #f2f3ff;
+  --am-muted: #a5aec8;
+  --am-purple: #a78bfa;
+  --am-blue: #60a5fa;
+
+  width: 100%;
+  min-width: 0;
+  color: var(--am-text);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.about-manager *,
+.about-manager *::before,
+.about-manager *::after {
+  box-sizing: border-box;
+}
+
+.about-manager-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+  border: 1px solid var(--am-border);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at top right, rgba(124, 58, 237, 0.2), transparent 55%),
+    linear-gradient(135deg, #151c35, #0d1224);
+}
+
+.about-manager-eyebrow {
+  color: var(--am-purple);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.about-manager-header h2 {
+  margin: 8px 0;
+  color: var(--am-text);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.25;
+}
+
+.about-manager-header p,
+.about-manager-card-heading p,
+.about-manager-points-heading p,
+.about-manager-savebar p {
+  margin: 6px 0 0;
+  color: var(--am-muted);
+  line-height: 1.6;
+}
+
+.about-manager-icon {
+  display: grid;
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  border-radius: 16px;
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.16);
+  font-size: 1.8rem;
+}
+
+.about-manager-card {
+  min-width: 0;
+  padding: 26px;
+  margin-bottom: 24px;
+  border: 1px solid var(--am-border);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #121a30, #0e1427);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.about-manager-card-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding-bottom: 22px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--am-border);
+}
+
+.about-manager-number {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  color: #ddd6fe;
+  background: rgba(139, 92, 246, 0.17);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.about-manager-card-heading h3 {
+  margin: 2px 0 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.about-manager-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+}
+
+.about-manager-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.about-manager-field label,
+.about-manager-add-point label {
+  color: #dce3ff;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.about-manager input,
+.about-manager textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 13px 15px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 10px;
+  outline: none;
+  background: #0a1020;
+  color: #f8faff;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-manager input:focus,
+.about-manager textarea:focus {
+  border-color: var(--am-purple);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.13);
+}
+
+.about-manager textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.about-manager input::placeholder,
+.about-manager textarea::placeholder {
+  color: #77829e;
+}
+
+.about-manager-hint {
+  align-self: flex-end;
+  color: var(--am-muted);
+  font-size: 0.78rem;
+}
+
+.about-manager-points-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 28px 0 16px;
+}
+
+.about-manager-points-heading h4 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.about-manager-count {
+  padding: 6px 10px;
+  border: 1px solid var(--am-border);
+  border-radius: 999px;
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.1);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.about-manager-points {
+  display: grid;
+  gap: 12px;
+}
+
+.about-manager-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(148, 163, 184, 0.19);
+  border-radius: 12px;
+  background: rgba(8, 14, 29, 0.55);
+}
+
+.about-manager-point-marker {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.14);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.about-manager-point > p {
+  flex: 1;
+  min-width: 0;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
+.about-manager-edit-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-manager-edit-area input {
+  margin-bottom: 12px;
+}
+
+.about-manager-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.about-manager-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.3;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.about-manager-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.about-manager-btn:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 3px;
+}
+
+.about-manager-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.about-manager-btn.primary {
+  color: white;
+  background: linear-gradient(110deg, #7c3aed, #4f46e5);
+}
+
+.about-manager-btn.primary:hover:not(:disabled) {
+  background: linear-gradient(110deg, #8b5cf6, #6366f1);
+}
+
+.about-manager-btn.secondary {
+  border-color: rgba(148, 163, 184, 0.28);
+  color: #dbe4ff;
+  background: #1a2440;
+}
+
+.about-manager-btn.secondary:hover:not(:disabled) {
+  border-color: rgba(167, 139, 250, 0.65);
+}
+
+.about-manager-btn.danger {
+  border-color: rgba(248, 113, 113, 0.28);
+  color: #fca5a5;
+  background: rgba(127, 29, 29, 0.2);
+}
+
+.about-manager-btn.danger:hover:not(:disabled) {
+  background: rgba(127, 29, 29, 0.4);
+}
+
+.about-manager-add-point {
+  display: grid;
+  gap: 10px;
+  margin-top: 25px;
+  padding-top: 23px;
+  border-top: 1px solid var(--am-border);
+}
+
+.about-manager-add-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.about-manager-add-row input {
+  flex: 1;
+}
+
+.about-manager-empty {
+  padding: 18px;
+  border: 1px dashed var(--am-border);
+  border-radius: 10px;
+  color: var(--am-muted);
+  text-align: center;
+}
+
+.about-manager-savebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  margin-bottom: 28px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 16px;
+  background: linear-gradient(110deg, rgba(79, 70, 229, 0.13), rgba(124, 58, 237, 0.1));
+}
+
+.about-manager-savebar strong {
+  display: block;
+  line-height: 1.5;
+}
+
+.about-manager-btn.save {
+  flex: 0 0 auto;
+  min-height: 46px;
+  padding: 12px 20px;
+  color: #fff;
+  background: linear-gradient(110deg, #7c3aed, #2563eb);
+  box-shadow: 0 5px 18px rgba(79, 70, 229, 0.18);
+}
+
+.about-manager-alert {
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.about-manager-alert.error {
+  border-color: rgba(248, 113, 113, 0.35);
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.2);
+}
+
+.about-manager-alert.success {
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #bbf7d0;
+  background: rgba(20, 83, 45, 0.2);
+}
+
+.about-manager-status {
+  padding: 24px;
+}
+
+@media (max-width: 650px) {
+  .about-manager-header {
+    padding: 21px;
+  }
+
+  .about-manager-card {
+    padding: 18px;
+  }
+
+  .about-manager-point {
+    flex-wrap: wrap;
+  }
+
+  .about-manager-point > p,
+  .about-manager-edit-area {
+    flex-basis: calc(100% - 48px);
+  }
+
+  .about-manager-point > .about-manager-actions {
+    width: 100%;
+    padding-left: 47px;
+  }
+
+  .about-manager-add-row,
+  .about-manager-savebar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about-manager-add-row .about-manager-btn,
+  .about-manager-savebar .about-manager-btn {
+    width: 100%;
+  }
+
+  .about-manager-points-heading {
+    align-items: flex-start;
+  }
+}
