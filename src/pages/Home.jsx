@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom'
 import { collection, doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../config/firebase.js'
 
-const API_URL = 'http://127.0.0.1:8000'
+
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+
 
 const DEFAULT_ABOUT_CONTENT = {
   aboutHeading: 'About Me',
