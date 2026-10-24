@@ -325,11 +325,17 @@ async def upload_profile_photo(
             "fileName": file.filename,
             "message": "Profile photo uploaded successfully.",
         }
-    except Exception:
-        logger.exception("Profile photo upload failed during %s", stage)
+
+    except Exception as exc:
+        logger.exception(
+            "Profile photo upload failed during %s", stage
+        )
         raise HTTPException(
             status_code=500,
-            detail=f"Profile photo {stage.lower()} failed. Check backend logs.",
+            detail=(
+                f"Profile photo {stage.lower()} failed: "
+                f"{type(exc).__name__}: {str(exc)[:300]}"
+            ),
         )
 
 
