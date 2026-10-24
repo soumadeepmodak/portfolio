@@ -2,7 +2,27 @@
 import { useEffect, useState } from "react";
 import { auth } from "../config/firebase.js";
 
-const API_URL = "";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://portfolio-api-lpe4.onrender.com";
+
+async function readResponse(response) {
+  const text = await response.text();
+
+  if (!text.trim()) {
+    throw new Error(
+      `Server returned an empty response (HTTP ${response.status}). Check the backend logs.`
+    );
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(
+      `Server returned invalid JSON (HTTP ${response.status}). Check the backend URL and deployment.`
+    );
+  }
+}
 
 export default function PhotoManager() {
   const [file, setFile] = useState(null);
@@ -14,25 +34,37 @@ export default function PhotoManager() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    let active = true;
+
     async function loadPhoto() {
       try {
         const response = await fetch(`${API_URL}/api/profile-photo`);
-        const data = await response.json();
+        const data = await readResponse(response);
 
         if (!response.ok) {
-          throw new Error(data.detail || "Could not load profile photo.");
+          throw new Error(
+            data.detail || `Could not load profile photo (HTTP ${response.status}).`
+          );
         }
 
-        setPhotoUrl(data.url || "");
-        setFileName(data.fileName || "");
+        if (active) {
+          setPhotoUrl(data.url || "");
+          setFileName(data.fileName || "");
+        }
       } catch (error) {
-        setMessage(error.message || "Could not load profile photo.");
+        if (active) {
+          setMessage(error.message || "Could not load profile photo.");
+        }
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
 
     loadPhoto();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -95,17 +127,22 @@ export default function PhotoManager() {
         body: formData,
       });
 
-      const data = await response.json();
+      const data = await readResponse(response);
 
       if (!response.ok) {
-        throw new Error(data.detail || "Photo upload failed.");
+        throw new Error(
+          data.detail || `Photo upload failed (HTTP ${response.status}).`
+        );
       }
 
       setPhotoUrl(data.url || "");
       setFileName(data.fileName || file.name);
       setFile(null);
       setPreviewUrl("");
-      event.target.reset();
+
+      const input = document.getElementById("profile-photo-input");
+      if (input) input.value = "";
+
       setMessage("Profile photo uploaded successfully.");
     } catch (error) {
       console.error("Profile photo upload error:", error);
@@ -118,7 +155,9 @@ export default function PhotoManager() {
   return (
     <section className="admin-welcome">
       <h2>Profile Photo</h2>
-      <p>Upload or replace your portfolio photo. JPG, PNG or WEBP, up to 5 MB.</p>
+      <p>
+        Upload or replace your portfolio photo. JPG, PNG or WEBP, up to 5 MB.
+      </p>
 
       {loading ? (
         <p>Loading current photo...</p>
@@ -184,7 +223,11 @@ export default function PhotoManager() {
         </button>
       </form>
 
-      {message && <p role="status" style={{ marginTop: "16px" }}>{message}</p>}
+      {message && (
+        <p role="status" style={{ marginTop: "16px" }}>
+          {message}
+        </p>
+      )}
     </section>
   );
 }
