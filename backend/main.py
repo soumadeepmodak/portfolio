@@ -23,12 +23,19 @@ from firebase_admin import credentials, auth, firestore
 from pydantic import BaseModel, Field
 
 
-# Load environment variables
+# ---------------- ENVIRONMENT CONFIGURATION ----------------
+
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
 # Firebase service account
-service_path = BASE_DIR / "firebase-service-account.json"
+# Render uses its Secret File; local development uses the local JSON file.
+service_path = Path(
+    os.getenv(
+        "FIREBASE_SERVICE_ACCOUNT_PATH",
+        str(BASE_DIR / "firebase-service-account.json"),
+    )
+)
 
 if not service_path.is_file():
     raise RuntimeError(
@@ -41,13 +48,18 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# Cloudinary configuration
+
+# ---------------- CLOUDINARY CONFIGURATION ----------------
+
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True,
 )
+
+
+# ---------------- FASTAPI APPLICATION ----------------
 
 app = FastAPI(title="My Portfolio API")
 
@@ -58,6 +70,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:5174",
         "http://127.0.0.1:5174",
+        "https://portfolio-dusky-nine-23.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
@@ -72,6 +85,13 @@ ADMIN_UID = "PuosNYo4JCOhP8vJCSHcSAxQ9Rt2"
 def home():
     return {"message": "Portfolio Backend is running!"}
 
+
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
+
+
+# ---------------- ADMIN AUTHENTICATION ----------------
 
 def verify_admin(
     credentials_header: HTTPAuthorizationCredentials | None = Depends(
