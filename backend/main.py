@@ -2,6 +2,7 @@
 import io
 import os
 import smtplib
+import logging
 from email.message import EmailMessage
 from pathlib import Path
 
@@ -23,13 +24,14 @@ from firebase_admin import credentials, auth, firestore
 from pydantic import BaseModel, Field
 
 
+logger = logging.getLogger(__name__)
+
+
 # ---------------- ENVIRONMENT CONFIGURATION ----------------
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
-# Firebase service account
-# Render uses its Secret File; local development uses the local JSON file.
 service_path = Path(
     os.getenv(
         "FIREBASE_SERVICE_ACCOUNT_PATH",
@@ -106,6 +108,7 @@ def verify_admin(
             credentials_header.credentials
         )
     except Exception:
+        logger.exception("Admin token verification failed")
         raise HTTPException(
             status_code=401,
             detail="Invalid or expired login token.",
@@ -141,6 +144,7 @@ def get_resume():
             "message": "Resume loaded.",
         }
     except Exception:
+        logger.exception("Could not load resume information")
         raise HTTPException(
             status_code=500,
             detail="Could not load resume information.",
@@ -178,6 +182,8 @@ async def upload_resume(
             detail="The selected file is not a valid PDF.",
         )
 
+    stage = "Cloudinary upload"
+
     try:
         result = cloudinary.uploader.upload(
             io.BytesIO(content),
@@ -186,6 +192,8 @@ async def upload_resume(
             overwrite=True,
             invalidate=True,
         )
+
+        stage = "Firestore save"
 
         resume_data = {
             "url": result["secure_url"],
@@ -201,12 +209,10 @@ async def upload_resume(
             "message": "Resume uploaded successfully.",
         }
     except Exception:
+        logger.exception("Resume upload failed during %s", stage)
         raise HTTPException(
             status_code=500,
-            detail=(
-                "Resume upload failed. Check server configuration "
-                "and Cloudinary/Firestore permissions."
-            ),
+            detail=f"Resume {stage.lower()} failed. Check backend logs.",
         )
 
 
@@ -233,6 +239,7 @@ def get_profile_photo():
             "message": "Profile photo loaded.",
         }
     except Exception:
+        logger.exception("Could not load profile photo information")
         raise HTTPException(
             status_code=500,
             detail="Could not load profile photo information.",
@@ -290,6 +297,8 @@ async def upload_profile_photo(
             detail="The selected file is not a valid supported image.",
         )
 
+    stage = "Cloudinary upload"
+
     try:
         result = cloudinary.uploader.upload(
             io.BytesIO(content),
@@ -298,6 +307,8 @@ async def upload_profile_photo(
             overwrite=True,
             invalidate=True,
         )
+
+        stage = "Firestore save"
 
         photo_data = {
             "url": result["secure_url"],
@@ -315,12 +326,10 @@ async def upload_profile_photo(
             "message": "Profile photo uploaded successfully.",
         }
     except Exception:
+        logger.exception("Profile photo upload failed during %s", stage)
         raise HTTPException(
             status_code=500,
-            detail=(
-                "Photo upload failed. Check Cloudinary and "
-                "Firestore configuration."
-            ),
+            detail=f"Profile photo {stage.lower()} failed. Check backend logs.",
         )
 
 
@@ -348,6 +357,7 @@ def send_email(email_message, sender_email, app_password):
             server.login(sender_email, app_password)
             server.send_message(email_message)
     except Exception:
+        logger.exception("Email sending failed")
         raise HTTPException(
             status_code=502,
             detail="Email could not be sent. Check SMTP configuration.",
@@ -380,6 +390,7 @@ def reply_to_contact_message(
     try:
         message_snapshot = message_ref.get()
     except Exception:
+        logger.exception("Could not load contact message")
         raise HTTPException(
             status_code=500,
             detail="Could not load the contact message.",
@@ -435,6 +446,7 @@ def reply_to_contact_message(
             "sentAt": firestore.SERVER_TIMESTAMP,
         })
     except Exception:
+        logger.exception("Reply email sent but reply history save failed")
         raise HTTPException(
             status_code=500,
             detail=(
@@ -466,6 +478,7 @@ def notify_contact_message(request: ContactNotificationRequest):
     try:
         snapshot = message_ref.get()
     except Exception:
+        logger.exception("Could not load contact message for notification")
         raise HTTPException(
             status_code=500,
             detail="Could not load the contact message.",
@@ -479,7 +492,6 @@ def notify_contact_message(request: ContactNotificationRequest):
 
     data = snapshot.to_dict() or {}
 
-    # Prevent repeated notification attempts for the same message.
     if data.get("emailNotificationSent") is True:
         return {"message": "Notification was already sent."}
 
@@ -520,6 +532,7 @@ def notify_contact_message(request: ContactNotificationRequest):
             "emailNotificationSentAt": firestore.SERVER_TIMESTAMP,
         })
     except Exception:
+        logger.exception("Notification sent but status save failed")
         raise HTTPException(
             status_code=500,
             detail=(
