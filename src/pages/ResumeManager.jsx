@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { auth } from "../config/firebase.js";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 export default function ResumeManager() {
   const [file, setFile] = useState(null);
@@ -15,6 +16,7 @@ export default function ResumeManager() {
   async function loadResume() {
     try {
       const response = await fetch(`${API_URL}/api/resume`);
+
       if (!response.ok) {
         throw new Error("Could not load Resume.");
       }
@@ -24,7 +26,9 @@ export default function ResumeManager() {
       setFileName(data.fileName || "");
     } catch (error) {
       console.error("Resume loading error:", error);
-      setMessage("Could not load Resume. Check that the Python backend is running.");
+      setMessage(
+        "Could not load Resume. Please check the backend connection."
+      );
     } finally {
       setLoading(false);
     }
@@ -81,9 +85,7 @@ export default function ResumeManager() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.detail || "Resume upload failed."
-        );
+        throw new Error(data.detail || "Resume upload failed.");
       }
 
       setResumeUrl(data.url || "");
@@ -139,7 +141,11 @@ export default function ResumeManager() {
       {resumeUrl && (
         <p>
           Current Resume{fileName ? ` (${fileName})` : ""}:{" "}
-          <a href={resumeUrl} target="_blank" rel="noreferrer">
+          <a
+            href={resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             View PDF
           </a>
         </p>
