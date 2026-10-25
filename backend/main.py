@@ -9,6 +9,7 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import firebase_admin
+from imagekitio import ImageKit
 
 from dotenv import load_dotenv
 from fastapi import (
@@ -52,12 +53,26 @@ db = firestore.client()
 
 
 # ---------------- CLOUDINARY CONFIGURATION ----------------
+# Kept for existing resume uploads. Do not remove these variables.
 
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True,
+)
+
+
+# ---------------- IMAGEKIT CONFIGURATION ----------------
+# Used only for profile photo uploads.
+# The private key must remain in Render Environment.
+
+imagekit_private_key = os.getenv("IMAGEKIT_PRIVATE_KEY", "").strip()
+
+imagekit = (
+    ImageKit(private_key=imagekit_private_key)
+    if imagekit_private_key
+    else None
 )
 
 
@@ -251,6 +266,12 @@ async def upload_profile_photo(
     file: UploadFile = File(...),
     admin=Depends(verify_admin),
 ):
+    if imagekit is None:
+        raise HTTPException(
+            status_code=503,
+            detail="ImageKit is not configured on the server.",
+        )
+
     if file.content_type not in {
         "image/jpeg",
         "image/png",
@@ -268,6 +289,7 @@ async def upload_profile_photo(
         )
 
     extension = Path(file.filename).suffix.lower()
+
     if extension not in {".jpg", ".jpeg", ".png", ".webp"}:
         raise HTTPException(
             status_code=400,
@@ -297,21 +319,21 @@ async def upload_profile_photo(
             detail="The selected file is not a valid supported image.",
         )
 
-    stage = "Cloudinary upload"
-
     try:
-        result = cloudinary.uploader.upload(
-            io.BytesIO(content),
-            resource_type="image",
-            public_id="portfolio/profile-photo",
-            overwrite=True,
-            invalidate=True,
+        result = imagekit.files.upload(
+            file=content,
+            file_name=f"profile-photo{extension}",
+            folder="/portfolio",
+            use_unique_file_name=True,
         )
 
-        stage = "Firestore save"
+        photo_url = result.url
+
+        if not photo_url:
+            raise RuntimeError("ImageKit did not return an image URL.")
 
         photo_data = {
-            "url": result["secure_url"],
+            "url": photo_url,
             "fileName": file.filename,
             "updatedAt": firestore.SERVER_TIMESTAMP,
         }
@@ -321,21 +343,16 @@ async def upload_profile_photo(
         )
 
         return {
-            "url": result["secure_url"],
+            "url": photo_url,
             "fileName": file.filename,
             "message": "Profile photo uploaded successfully.",
         }
 
-    except Exception as exc:
-        logger.exception(
-            "Profile photo upload failed during %s", stage
-        )
+    except Exception:
+        logger.exception("Profile photo upload failed")
         raise HTTPException(
             status_code=500,
-            detail=(
-                f"Profile photo {stage.lower()} failed: "
-                f"{type(exc).__name__}: {str(exc)[:300]}"
-            ),
+            detail="Profile photo upload failed. Check backend logs.",
         )
 
 

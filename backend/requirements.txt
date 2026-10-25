@@ -1,6 +1,8 @@
+
 fastapi
 uvicorn[standard]
 python-multipart
 cloudinary
 python-dotenv
 firebase-admin
+imagekitio
